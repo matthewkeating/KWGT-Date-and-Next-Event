@@ -1,0 +1,19 @@
+$
+if (((ci(ecount, a0d)+ci(acount, a0d)<1), /* if no events today */
+	"No events today",
+if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10), /* if the next-next event <= 10 mintues away */
+	ci(title, e1) + " in " + (tf(ci(start, e1), m)+1) + " mins",
+if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=240), /* if the next event <= 4 hours away */
+	df(hh:mma, ci(start, e0)) + tc(utf, 20) + ci(title, e0),
+/* ASSERT: the next event is more than 4 hours away */
+if((df(D,ci(start,e0))=df(D)), /* next event is today */
+   	"No events in the next 4 hours",
+/* ASSERT: the next event is not today */
+if((ci(acount,a0d)<=0), /* if there are no all-day events */
+	"No more events today",
+if((ci(acount,a0d)=1), /* if there is exactly one all-day event */
+	ci(title, a0),
+	/* ASSERT: there are no events in the next 4 hours and >1 all-day events */
+	"Multiple all-day events"
+)))))))
+$
