@@ -17,3 +17,4 @@ if((ci(acount,a0d)=1), /* if there is exactly one all-day event */
 	"Multiple all-day events"
 )))))))
 $
+$Test$
