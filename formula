@@ -1,20 +1,34 @@
 $
-if (((ci(ecount, a0d)+ci(acount, a0d)<1), /* if no events today */
+/* if no events today */
+if ((ci(ecount, a0d)+ci(acount, a0d)<1),
 	"No events today",
-if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10), /* if the next-next event <= 10 mintues away */
-	ci(title, e1) + " in " + (tf(ci(start, e1), m)+1) + " mins",
-if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=240), /* if the next event <= 4 hours away */
-	df(hh:mma, ci(start, e0)) + tc(utf, 20) + ci(title, e0),
-/* ASSERT: the next event is more than 4 hours away */
-if((df(D,ci(start,e0))=df(D)), /* next event is today */
+
+/* if the next-next event <= 10 mintues away */
+if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10),
+	tc(ell, ci(title, e1), 18) + " in " + (tf(ci(start, e1), m)+1) + " mins",
+
+/* if the next event is 0 to 10 mintues away */
+if ((((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))>0 &((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=10), 
+	tc(ell, ci(title, e0), 18) + " in " + (tf(ci(start, e0), m)+1) + " mins",
+
+/* if the next event <= 4 hours away */
+if ((df(D,ci(start,e0))=df(D)&((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=240),
+	tc(ell, df(hh:mma, ci(start, e0)) + tc(utf, 20) + ci(title, e0), 18),
+
+/* if the next event is today (but is > 4 hours away (b/c the above conidtion)) */
+if((df(D,ci(start,e0))=df(D)),
    	"No events in the next 4 hours",
-/* ASSERT: the next event is not today */
-if((ci(acount,a0d)<=0), /* if there are no all-day events */
+
+/* ASSERT: the next event is not today, so everything below only has to deal with all day events */
+
+/* if there are no all-day events */
+if((ci(acount,a0d)<=0),
 	"No more events today",
-if((ci(acount,a0d)=1), /* if there is exactly one all-day event */
+
+/* if there is exactly one all-day event */
+if((ci(acount,a0d)=1),
 	ci(title, a0),
-	/* ASSERT: there are no events in the next 4 hours and >1 all-day events */
+	/* this is the "else" condition, where there are >1 all-day events */
 	"Multiple all-day events"
 )))))))
 $
-$Test$
