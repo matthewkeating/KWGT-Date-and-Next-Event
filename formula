@@ -8,19 +8,19 @@ if ((df(D,ci(start,e0))=df(D) &	/* the next event must be today */
 	 df(D,ci(start,e1))=df(D) & /* the next-next event must also be today */
 	 ((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10),
 
-	tc(ell, ci(title, e1), 18) + " in " + (tf(ci(start, e1), m)+1) + " mins",
+	tc(ell, ci(title, e1), 15) + " in " + (tf(ci(start, e1), m)+1) + " mins",
 
 /* if the next event is <=60 mintues away (but has not started) */
 if ((((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))>0 &	/* ensures the event has not started */
 	 ((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=60), 
 	
-	ci(title, e0), 18 + " in " + (tf(ci(start, e0), m)+1) + " mins",
+	tc(ell, ci(title, e0), 15) + " in " + (tf(ci(start, e0), m)+1) + " mins",
 
 /* e0 is underway */
-if (((tf(ci(start, e0), m) < 0) &	/* event has started */
-	 (tf(ci(end, e0), m) > 0)),		/* event has not end */
+if (((tf(ci(start, e0), m) <= 0) &	/* event has started */
+	 (tf(ci(end, e0), m) > 0)),	/* event has not ended */
 	
-	tc(ell, ci(title, e0), 18) + " now",
+	tc(ell, ci(title, e0), 20) + " now",
 
 /* ASSERT: the next event is > 60 minutes away */
 
