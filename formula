@@ -1,4 +1,6 @@
 $
+/* version: 1.0.0 */
+
 /* if no events today */
 if ((ci(ecount, a0d)+ci(acount, a0d)<1),
 	"No events today",
