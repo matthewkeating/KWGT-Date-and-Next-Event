@@ -1,31 +1,37 @@
 $
-/* version: 1.0.1 */
+/* version: 1.0.2 */
 
 /* if no events today */
 if ((ci(ecount, a0d)+ci(acount, a0d)<1),
 	"No events today",
 
-/* if the next-next event <= 10 mintues away (this handles the case of notifying when two events are back-to-back) */
+/* ASSERT: There are events today (these events could be in the past or the future) */
+
+/* if the next-next event <= 10 mintues away but has not started (this handles the case of notifying when two events are back-to-back) */
 if ((df(D,ci(start,e0))=df(D) &		/* the next event must be today */
-	 df(D,ci(start,e1))=df(D) &	/* the next-next event must also be today */
-	 ((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10),
+	 df(D,ci(start,e1))=df(D) &		/* the next-next event must also be today */
+	 ((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))>0 &	/* ensures the next-next event has not started */
+	 ((df(H,ci(start, e1))*60)+(df(mm,ci(start,e1))))-((df(H)*60)+df(mm))<=10), /* the next-next event is starting in <= 10 minutes */
 
 	tc(ell, ci(title, e1), 15) + " in " + (tf(ci(start, e1), m)+1) + " mins",
 
-/* if the next event is <=60 mintues away (but has not started) */
-if ((df(D,ci(start,e0))=df(D) &								/* the next event must be today */
+/* if the next event is <=60 mintues away but has not started */
+if ((df(D,ci(start,e0))=df(D) &													/* the next event must be today */
 	 ((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))>0 &	/* ensures the event has not started */
 	 ((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm))<=60), 
 	
 	tc(ell, ci(title, e0), 15) + " in " + (tf(ci(start, e0), m)+1) + " mins",
 
-/* e0 is underway */
-if (((tf(ci(start, e0), m) <= 0) &	/* event has started */
-	 (tf(ci(end, e0), m) > 0)),	/* event has not ended */
+/* if e0 is underway */
+if ((
+	 ((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))-((df(H)*60)+df(mm)) <= 0 &	/* event has started */
+	 ((df(H,ci(end, e0))*60)+(df(mm,ci(end,e0))))-((df(H)*60)+df(mm)) > 0),		/* event has not ended */
 	
 	tc(ell, ci(title, e0), 20) + " now",
 
-/* ASSERT: the next event is > 60 minutes away */
+/* ASSERT: There are events today (these events could be in the past or the future) */
+/* ASSERT: there are no underway events */
+/* ASSERT: there are no events starting in the next 60 minutes */
 
 /* if there is exactly one all-day event */
 if((ci(acount,a0d)=1),
@@ -37,13 +43,39 @@ if((ci(acount,a0d)=1),
 if((ci(acount,a0d)>1),
 	ci(acount,a0d) + " all-day events",
 
-/* ASSERT: the next event is not today, so everything below only has to deal with all day events */
-
 /* if there are no all-day events */
 if((ci(acount,a0d)<=0),
+
+/* ASSERT: There is at least one event today (the event(s) could be in the past or the future) */
+/* ASSERT: There are no all-day events */
+/* ASSERT: there are no underway events */
+/* ASSERT: there are no events starting in the next 60 minutes */
+
+if(
+	df(D,ci(start,e0))=df(D) &
+	((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))<((df(H)*60)+(df(mm))),	/* if the next event is in the past */
 	"No more events today",
-	"Unexpected: No conditions met"		/* when none of the above conditions are met */
+
+	/* else there are some number of events in the future */
+	lv(num,	/* Step 3: save the number to a variable called num */
+		tc(count, /* Step 2: count how many 0's are in the string */
+			fl(	/* Step 1: loop through the days events and build a string of 0's and 1's, where each 0 represents a instance where the days event has not yet occured */
+				0,
+				ci(ecount, e0d)-1,
+				"i+1",
+				"if(((df(H,ci(start, e0))*60)+(df(mm,ci(start,e0))))>((df(H)*60)+(df(mm))),
+					0,
+					1
+				)"
+			),
+		0)
+	)
+	+
+	if (#num = 1,
+		"1 remaining event",
+		#num + " remaining events"
+	)
 
 /* programming note: there will be exactly the same number of ) below as there are fully left-aligned if statements above */
-)))))))
+))))))))
 $
