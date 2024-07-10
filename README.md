@@ -19,7 +19,7 @@ Additionally, the widget contains logic for:
 <img src="https://github.com/matthewkeating/KWGT-Date-and-Next-Event/assets/6810065/ef639614-5d94-4a95-97c3-a4b631247412" width="350"/><p/>
 <img src="https://github.com/matthewkeating/KWGT-Date-and-Next-Event/assets/6810065/89119474-3ca6-459f-86c3-36ac1417500d" width="350"/>
 
-## Note on the Formula Used
+## Note on the Formulas Used
 I don't write alot of KWGT widgets... and I find the dearth of features in the language (and the lack of an editor) make it challegning to write readable code. I have included a formula file in this repo to better illustrate the logic and serve as a starting point for anyone who may want to make modifications.
 
 ## Considerations
